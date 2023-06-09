@@ -11,10 +11,14 @@ class RespType(ABC):
         """Convert the object into RESP protocol strings"""
 
 class SimpleString(RespType):
-    def __init__(self, message, index):
-        endLine = message.find('\r\n', index)
-        self.s = message[index+1:endLine]
-        self.index = endLine + 2
+    def __init__(self, message, index=None):
+        if index  is None:
+            self.s = message
+            self.index = None
+        else:
+            endLine = message.find('\r\n', index)
+            self.s = message[index+1:endLine]
+            self.index = endLine + 2
     
     def __len__(self):
         return len(self.s)

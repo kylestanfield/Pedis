@@ -5,15 +5,21 @@ HOST = 'localhost'
 PORT = 6379
 
 def parse(message):
-    print('now parsing!')
     return Array(message, 0)
 
 async def handle_request(reader, writer):
     request = (await reader.read(1024)).decode('utf8')
-    print(request)
     command = parse(request)
-    print('done parsing!')
-    print(command)
+    procedure = command[0]
+    args = command[1:]
+    match procedure.getString():
+        case 'PING':
+            s = SimpleString('PONG')
+            writer.write(s.serialize().encode())
+            await writer.drain()
+        case 'ECHO':
+            writer.write(args[0].serialize().encode())
+            await writer.drain()
     
 
 async def run_server():
