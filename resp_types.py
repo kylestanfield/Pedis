@@ -1,5 +1,6 @@
 from abc import ABC
-class resp_type(ABC):
+
+class RespType(ABC):
     def __init__(self, message, index):
         """Initialize the RESP object"""
     
@@ -9,7 +10,7 @@ class resp_type(ABC):
     def serialize(self):
         """Convert the object into RESP protocol strings"""
 
-class SimpleString(resp_type):
+class SimpleString(RespType):
     def __init__(self, message, index):
         endLine = message.find('\r\n', index)
         self.s = message[index+1:endLine]
@@ -33,7 +34,7 @@ class SimpleString(resp_type):
     def getIndex(self):
         return self.index
 
-class Error(resp_type):
+class Error(RespType):
     def __init__(self, message, index):
         endLine = message.find('\r\n', index)
         self.err = message[index+1:endLine]
@@ -51,7 +52,7 @@ class Error(resp_type):
     def getIndex(self):
         return self.index
 
-class Integer(resp_type):
+class Integer(RespType):
     def __init__(self, message, index):
         endLine = message.find('\r\n', index)
         self.num = int(message[index+1:endLine])
@@ -69,7 +70,7 @@ class Integer(resp_type):
     def getIndex(self):
         return self.index
 
-class BulkString(resp_type):
+class BulkString(RespType):
     def __init__(self, message, index):
         endLine = message.find('\r\n', index)
         self.bytes = int(message[index+1:endLine])
@@ -100,7 +101,7 @@ class BulkString(resp_type):
     def getIndex(self):
         return self.index
 
-class Array(resp_type):
+class Array(RespType):
     def __init__(self, message, index):
         lineEnd = message.find('\r\n', index)
         numElements = int(message[index+1:lineEnd])
