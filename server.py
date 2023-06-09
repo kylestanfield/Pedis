@@ -4,26 +4,16 @@ from resp_types import *
 HOST = 'localhost'
 PORT = 6379
 
-def deserialize(message):
-    data_type = message[0]
-    match data_type:
-        case '+':
-            return SimpleString(message)
-        case '-':
-            return Error(message)
-        case ':':
-            return Integer(message)
-        case '$':
-            return BulkString(message)
-        case '*':
-            return Array(message)
-        case _:
-            raise ValueError(f'Could not parse {message}')
-
+def parse(message):
+    print('now parsing!')
+    return Array(message, 0)
 
 async def handle_request(reader, writer):
     request = (await reader.read(1024)).decode('utf8')
-    print(request.split('\r\n'))
+    print(request)
+    command = parse(request)
+    print('done parsing!')
+    print(command)
     
 
 async def run_server():
