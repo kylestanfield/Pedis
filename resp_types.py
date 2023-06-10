@@ -28,6 +28,9 @@ class SimpleString(RespType):
 
     def __repr__(self) -> str:
         return self.s
+    
+    def __str__(self):
+        return self.s
 
     def serialize(self):
         return f"+{self.s}\r\n"
@@ -75,7 +78,14 @@ class Integer(RespType):
         return self.index
 
 class BulkString(RespType):
-    def __init__(self, message, index):
+    def __init__(self, message=None, index=None):
+        if index is None:
+            if message is None:
+                self.val = None
+                self.index = None
+                return
+            else:
+                index = 0
         endLine = message.find('\r\n', index)
         self.bytes = int(message[index+1:endLine])
 
@@ -91,6 +101,9 @@ class BulkString(RespType):
         return self.bytes
     
     def __repr__(self):
+        return self.val
+    
+    def __str__(self):
         return self.val
     
     def serialize(self):
