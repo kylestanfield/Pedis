@@ -85,7 +85,10 @@ class BulkString(RespType):
                 self.index = None
                 return
             else:
-                index = 0
+                self.val = message
+                self.index = None
+                self.bytes = len(message)
+                return
         endLine = message.find('\r\n', index)
         self.bytes = int(message[index+1:endLine])
 
@@ -121,6 +124,7 @@ class BulkString(RespType):
 class Array(RespType):
     def __init__(self, message, index):
         lineEnd = message.find('\r\n', index)
+        print(message)
         numElements = int(message[index+1:lineEnd])
         index = lineEnd + 2 # go past \r\n
 
